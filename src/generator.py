@@ -5,6 +5,7 @@ from zipfile import ZipFile
 
 from jinja2 import Environment, PackageLoader
 
+from models import Document, DocumentObject
 from utils import clear_directory
 
 
@@ -24,22 +25,22 @@ def generate_random_document(
     max_level: int = DEFAULT_MAX_LEVEL,
     min_objects_quantity: int = DEFAULT_MIN_OBJECTS_QUANTITY,
     max_objects_quantity: int = DEFAULT_MAX_OBJECTS_QUANTITY,
-)-> dict:
-    return {
-        'id': str(uuid4()),
-        'level': randint(min_level, max_level),
-        'objects': [
-            {'name': str(uuid4())}
+)-> Document:
+    return Document(
+        id_=str(uuid4()),
+        level=randint(min_level, max_level),
+        objects=[
+            DocumentObject(name=str(uuid4()))
             for _ in range(randint(min_objects_quantity, max_objects_quantity))
-        ]
-    }
+        ],
+    )
 
 
 def document_to_xml(
-    document: dict, template_name: str = DEFAULT_XML_TEMPLATE_NAME,
+    document: Document, template_name: str = DEFAULT_XML_TEMPLATE_NAME,
     template_env: Environment = DEFAULT_TEMPLATE_ENV,
 ) -> str:
-    return template_env.get_template(template_name).render(document)
+    return template_env.get_template(template_name).render(document=document)
 
 
 def generate_zip_files_with_random_documents(

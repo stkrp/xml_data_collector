@@ -1,9 +1,9 @@
 <root>
-    <var name='id' value='{{ id }}'/>
-    <var name='level' value='{{ level }}'/>
+    <var name='id' value='{{ document.id }}'/>
+    <var name='level' value='{{ document.level }}'/>
     <objects>
-        {% for object in objects %}
-            <object name='{{ object["name"] }}'/>
+        {% for object in document.objects %}
+            <object name='{{ object.name }}'/>
         {% endfor %}
     </objects>
 </root>
