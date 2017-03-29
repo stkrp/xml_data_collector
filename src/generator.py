@@ -1,10 +1,11 @@
 import os
-import shutil
 from random import randint
 from uuid import uuid4
 from zipfile import ZipFile
 
 from jinja2 import Environment, PackageLoader
+
+from utils import clear_directory
 
 
 # Documents generator
@@ -45,7 +46,10 @@ def generate_zip_files_with_random_documents(
     quantity: int, documents_per_file: int, dir_path: str,
     verbose: bool = True,
 ) -> None:
-    _clear_directory(dir_path)
+    if os.path.exists(dir_path):
+        clear_directory(dir_path)
+    else:
+        os.makedirs(dir_path)
 
     for zip_file_num in range(quantity):
         zip_file_path = os.path.join(dir_path, f'{zip_file_num}.zip')
@@ -58,17 +62,6 @@ def generate_zip_files_with_random_documents(
 
         if verbose:
             print(f'{zip_file_path} created')
-
-
-def _clear_directory(path: str) -> None:
-    """ 
-    Удаляет папку и создает заново
-
-    НЕЛЬЗЯ использовать, если важны параметры оригинальной папки, например, 
-    права, или если недостаточно прав для создания папки.
-    """
-    shutil.rmtree(path, ignore_errors=True)
-    os.makedirs(path, exist_ok=True)
 
 
 if __name__ == '__main__':
