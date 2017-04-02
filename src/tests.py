@@ -1,7 +1,13 @@
 import os
 import tempfile
-from unittest import TestCase
+from unittest import TestCase, mock
 
+from entities import Document, DocumentObject
+from generator import (
+    generate_random_document, document_to_xml,
+    # generate_zip_file_with_random_documents,
+    # generate_zip_files_with_random_documents,
+)
 from utils import clear_directory, filter_file_names
 
 
@@ -103,3 +109,59 @@ class FilterFileNamesTestCase(OsShortcutsTestCaseMixin, TestCase):
             self.assertSetEqual(set(filter_file_names(temp_dir_path)), set())
 
         self.assertFalse(os.path.exists(temp_dir_path))
+
+
+class GenerateRandomDocumentTestCase(TestCase):
+    # TODO: Добавить тесты краевых условий
+    def test_generate_random_document(self):
+        mock_uuid4_value = '8e7838b8-be1e-47bb-9f4e-0ad3daca3bb9'
+        excepted_document = Document(
+            id_=mock_uuid4_value,
+            level=5,  # Произвольное допустимое значение
+            objects=[
+                DocumentObject(name=mock_uuid4_value),
+                DocumentObject(name=mock_uuid4_value),
+            ]
+        )
+        with mock.patch('generator.uuid4', return_value=mock_uuid4_value):
+            document = generate_random_document(
+                min_level=excepted_document.level,
+                max_level=excepted_document.level,
+                min_objects_quantity=len(excepted_document.objects),
+                max_objects_quantity=len(excepted_document.objects),
+            )
+
+            self.assertEquals(document, excepted_document)
+
+
+class DocumentToXmlTestCase(TestCase):
+    # TODO: Добавить тесты краевых условий
+    def test_document_to_xml(self):
+        document = Document(
+            id_='8e7838b8-be1e-47bb-9f4e-0ad3daca3bb9',
+            level=5,
+            objects=[
+                DocumentObject(name='49fj29nq-fj34-fk2p-9f4e-fj920v02fj29'),
+                DocumentObject(name='l29j2ma4-vlq3-24jr-34ve-fvj349voa113'),
+            ]
+        )
+
+        xml = document_to_xml(document)
+        expected_xml = (
+            f"<root>\n"
+            f"    <var name='id' value='{document.id}'/>\n"
+            f"    <var name='level' value='{document.level}'/>\n"
+            f"    <objects>\n"
+            f"        \n"
+            f"            <object name='{document.objects[0].name}'/>\n"
+            f"        \n"
+            f"            <object name='{document.objects[1].name}'/>\n"
+            f"        \n"
+            f"    </objects>\n"
+            f"</root>"
+        )
+        self.assertEquals(xml, expected_xml)
+
+
+# TODO: Дописать тесты для `generate_zip_file_with_random_documents`
+# TODO: Дописать тесты для `generate_zip_files_with_random_documents`

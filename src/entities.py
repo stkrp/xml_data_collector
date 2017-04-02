@@ -10,6 +10,12 @@ class DocumentObject:
     def __repr__(self):
         return f'{self.__class__.__name__}(name={repr(self.name)})'
 
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __hash__(self):
+        return hash(self.name)
+
 
 class Document:
     __slots__ = ('id', 'level', 'objects')
@@ -30,3 +36,13 @@ class Document:
             f'objects={repr(self.objects)}'
             f')'
         )
+
+    def __eq__(self, other):
+        return (
+            self.id == other.id
+            and self.level == other.level
+            and self.objects == other.objects
+        )
+
+    def __hash__(self):
+        return hash(self.id)

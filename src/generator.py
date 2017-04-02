@@ -1,11 +1,13 @@
 import os
+from functools import partial
+from multiprocessing import Pool
 from random import randint
 from uuid import uuid4
 from zipfile import ZipFile
 
 from jinja2 import Environment, PackageLoader
 
-from models import Document, DocumentObject
+from entities import Document, DocumentObject
 from utils import clear_directory
 
 
@@ -43,8 +45,22 @@ def document_to_xml(
     return template_env.get_template(template_name).render(document=document)
 
 
+def generate_zip_file_with_random_documents(
+    zip_file_path: str, documents_per_file: int, verbose: bool = True
+) -> None:
+    with ZipFile(zip_file_path, 'w') as zip_file:
+        for document_num in range(documents_per_file):
+            zip_file.writestr(
+                f'{document_num}.xml',
+                document_to_xml(generate_random_document()),
+            )
+
+    if verbose:
+        print(f'{zip_file_path} created')
+
+
 def generate_zip_files_with_random_documents(
-    quantity: int, documents_per_file: int, dir_path: str,
+    dir_path: str, quantity: int, documents_per_file: int,
     verbose: bool = True,
 ) -> None:
     if os.path.exists(dir_path):
@@ -52,18 +68,22 @@ def generate_zip_files_with_random_documents(
     else:
         os.makedirs(dir_path)
 
-    for zip_file_num in range(quantity):
-        zip_file_path = os.path.join(dir_path, f'{zip_file_num}.zip')
-        with ZipFile(zip_file_path, 'w') as zip_file:
-            for document_num in range(documents_per_file):
-                zip_file.writestr(
-                    f'{document_num}.xml',
-                    document_to_xml(generate_random_document()),
-                )
+    zip_file_paths = (
+        os.path.join(dir_path, f'{zip_file_num}.zip')
+        for zip_file_num in range(quantity)
+    )
 
-        if verbose:
-            print(f'{zip_file_path} created')
+    generate_zip_file = partial(
+        generate_zip_file_with_random_documents,
+        documents_per_file=documents_per_file, verbose=verbose,
+    )
+
+    with Pool() as pool:
+        # TODO: Добавить расчет `chunksize`
+        pool.imap_unordered(generate_zip_file, zip_file_paths)
+        pool.close()
+        pool.join()
 
 
 if __name__ == '__main__':
-    generate_zip_files_with_random_documents(50, 100, 'documents')
+    generate_zip_files_with_random_documents('documents', 500, 1000)

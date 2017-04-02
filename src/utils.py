@@ -19,6 +19,15 @@ def filter_file_names(
     return file_names
 
 
+def filter_file_paths(
+    dir_path: str, extension: str = None,
+) -> Generator[str, None, None]:
+    return (
+        os.path.join(dir_path, file_name)
+        for file_name in filter_file_names(dir_path, extension)
+    )
+
+
 def clear_directory(dir_path: str) -> None:
     """ 
     Удаляет папку и создает заново
