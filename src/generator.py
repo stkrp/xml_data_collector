@@ -86,4 +86,4 @@ def generate_zip_files_with_random_documents(
 
 
 if __name__ == '__main__':
-    generate_zip_files_with_random_documents('documents', 500, 1000)
+    generate_zip_files_with_random_documents('documents', 50, 100)
