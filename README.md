@@ -34,13 +34,19 @@
 
 1. Генератор архивов определен в модуле `generator.py`. Для запуска нужно выполнить команду:
     
-    ``` python3 generator.py ```
+    ```
+    cd src
+    python3 generator.py
+    ```
     
     Готовые архивы будут размещены в папке `documents`.
 
 2. Сбор информации о документах из архивов определен в модуле `collector.py`. Для запуска нужно выполнить команду:
     
-    ``` python3 collector.py ```
+    ```
+    cd src
+    python3 collector.py
+    ```
     
     Первый файл будет называться `documents.csv`, а второй -- `objects.csv`.
 
@@ -49,4 +55,8 @@
 
 Тесты реализованы частично. Для запуска нужно выполнить команду:
 
-``` python3 tests.py ```
+```
+# https://docs.python.org/3/library/unittest.html#test-discovery
+cd src
+python3 -m unittest discover tests
+```
