@@ -117,7 +117,7 @@ def collect_documents_info_multiple_core(
 
 if __name__ == '__main__':
     # https://docs.python.org/3/library/csv.html#id3
-    with open('docs.csv', 'wt', encoding='utf-8', newline='') as docs_fh, \
-         open('objs.csv', 'wt', encoding='utf-8', newline='') as objs_fh:
+    with open('documents.csv', 'wt', encoding='utf-8', newline='') as docs_fh,\
+         open('objects.csv', 'wt', encoding='utf-8', newline='') as objs_fh:
 
         collect_documents_info_multiple_core('documents', docs_fh, objs_fh)

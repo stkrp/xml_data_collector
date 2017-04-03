@@ -1,6 +1,6 @@
 import os
 import tempfile
-from unittest import TestCase, mock
+from unittest import TestCase, mock, main
 
 from entities import Document, DocumentObject
 from generator import (
@@ -131,7 +131,7 @@ class GenerateRandomDocumentTestCase(TestCase):
                 max_objects_quantity=len(excepted_document.objects),
             )
 
-            self.assertEquals(document, excepted_document)
+            self.assertEqual(document, excepted_document)
 
 
 class DocumentToXmlTestCase(TestCase):
@@ -160,8 +160,12 @@ class DocumentToXmlTestCase(TestCase):
             f"    </objects>\n"
             f"</root>"
         )
-        self.assertEquals(xml, expected_xml)
+        self.assertEqual(xml, expected_xml)
 
 
 # TODO: Дописать тесты для `generate_zip_file_with_random_documents`
 # TODO: Дописать тесты для `generate_zip_files_with_random_documents`
+
+
+if __name__ == '__main__':
+    main()
